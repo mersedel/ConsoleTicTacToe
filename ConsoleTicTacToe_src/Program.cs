@@ -33,6 +33,17 @@ namespace ConsoleTicTacToe
                    return;
 
             }
-        }
+        }*/
+
+        static string Output(int col, int row)
+        {
+            for (int columnIndex = 0; columnIndex < col; columnIndex++)
+            {
+                for (int rowIndex = 0; rowIndex < row; rowIndex++)
+                {
+                    Console.WriteLine(CellPosition(columnIndex, rowIndex));
+                }
+                rowIndex = 0;
+            }
     }
 }
