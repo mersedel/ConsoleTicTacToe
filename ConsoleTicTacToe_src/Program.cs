@@ -3,17 +3,19 @@ namespace ConsoleTicTacToe
 {
     internal class Program
     {
-        static byte selectedFieldRow;
-        static byte selectedFieldColumn;
+        private static byte selectedFieldRow;
+        private static byte selectedFieldColumn;
 
-        static bool gameIsRunning = true; //тимчасово воно буде true на початку
+        private static bool gameIsRunning = true;
 
-        static char[,] Field = 
+        private static char[,] Field = 
         {
             { '_', '_', '_' },
             { '_', '_', '_' },
             { '_', '_', '_' }
         };
+
+        private static char currentPlayer = 'X';
 
 
         static void Main(string[] args)
@@ -28,6 +30,8 @@ namespace ConsoleTicTacToe
 
         static void DrawField()
         {
+            Console.WriteLine($"{currentPlayer} Player`s turn:");
+
             for (int row = 0; row < 3; row++)
             {
                 for (int col = 0; col < 3; col++)
@@ -67,8 +71,14 @@ namespace ConsoleTicTacToe
                 case ConsoleKey.RightArrow:
                     if (selectedFieldColumn == 2) break;
                     selectedFieldColumn++; break;
+
+                case ConsoleKey.Enter:
+                    Field[selectedFieldRow, selectedFieldColumn] = currentPlayer;
+
+                    if (currentPlayer == 'X') { currentPlayer = 'O'; break; }
+                    if (currentPlayer == 'O') { currentPlayer = 'X'; break; }
+                    break;
             }
         }
-
     }
 }
