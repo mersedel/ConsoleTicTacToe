@@ -3,11 +3,14 @@ namespace ConsoleTicTacToe
 {
     internal class Program
     {
+        // Tracks the currently selected row and column
         private static byte selectedFieldRow;
         private static byte selectedFieldColumn;
 
+        // Controls the game loop
         private static bool gameIsRunning = true;
 
+        // The tic-tac-toe board, initialized with empty cells
         private static char[,] Field = 
         {
             { '_', '_', '_' },
@@ -15,27 +18,32 @@ namespace ConsoleTicTacToe
             { '_', '_', '_' }
         };
 
+        // Keeps track of whose turn it is ('x' or 'o')
         private static char currentPlayer = 'x';
 
 
         static void Main(string[] args)
         {
+            // Main game loop
             while (gameIsRunning)
             {
-                Console.Clear();
-                DrawField();
-                FieldCellSelecter();
+                Console.Clear(); // Clear the console for each frame
+                DrawField(); // Draw the current state of the game field
+                FieldCellSelecter(); // Allow player to select a cell
             }
         }
 
+        // Method to draw the game field on the console
         static void DrawField()
         {
             Console.WriteLine(currentPlayer + " Player`s turn:");
 
+            // Loops through each cell and draws it
             for (int row = 0; row < 3; row++)
             {
                 for (int col = 0; col < 3; col++)
                 {
+                    // Highlights the currently selected cell
                     if (row == selectedFieldRow && col == selectedFieldColumn)
                     {
                         Console.BackgroundColor = ConsoleColor.DarkGray;
@@ -52,6 +60,7 @@ namespace ConsoleTicTacToe
             }
         }
 
+        // Handles user input for selecting a cell and placing their mark
         static void FieldCellSelecter()
         {
             switch (Console.ReadKey(true).Key)
@@ -80,19 +89,27 @@ namespace ConsoleTicTacToe
                     Console.Clear();
                     DrawField();
 
+                    // Check for a winner after each move
                     WinCheck();
 
+                    // Switches to the other player after the move
                     currentPlayer = currentPlayer == 'x' ? 'o' : 'x';
 
                     break;
             }
         }
 
+        // Checks for a winning condition
         static void WinCheck()
         {
-            if (CheckLine(0, 0, 0, 1, 0, 2) || CheckLine(1, 0, 1, 1, 1, 2) || CheckLine(2, 0, 2, 1, 2, 2) || // Rows
-                CheckLine(0, 0, 1, 0, 2, 0) || CheckLine(0, 1, 1, 1, 2, 1) || CheckLine(0, 2, 1, 2, 2, 2) || // Columns
-                CheckLine(0, 0, 1, 1, 2, 2) || CheckLine(2, 0, 1, 1, 0, 2))                                 // Diagonals
+            if (CheckLine(0, 0, 0, 1, 0, 2) ||  // Row 1
+                CheckLine(1, 0, 1, 1, 1, 2) ||  // Row 2
+                CheckLine(2, 0, 2, 1, 2, 2) ||  // Row 3
+                CheckLine(0, 0, 1, 0, 2, 0) ||  // Column 1
+                CheckLine(0, 1, 1, 1, 2, 1) ||  // Column 2
+                CheckLine(0, 2, 1, 2, 2, 2) ||  // Column 3
+                CheckLine(0, 0, 1, 1, 2, 2) ||  // Diagonal 1
+                CheckLine(2, 0, 1, 1, 0, 2))    // Diagonal 2
             {
                 Console.WriteLine(currentPlayer + " Player Wins!\n\nStart new game? (y/n)");
 
@@ -103,12 +120,12 @@ namespace ConsoleTicTacToe
 
                     if (key == ConsoleKey.Y)
                     {
-                        ResetGame();
+                        ResetGame(); // Reset the game if the player chooses 'Y'
                         break;
                     }
                     else if (key == ConsoleKey.N)
                     {
-                        gameIsRunning = false;
+                        gameIsRunning = false; // Ends the game if the player chooses 'N'
                         break;
                     }
                 } while (key != ConsoleKey.Y && key != ConsoleKey.N);
@@ -116,6 +133,7 @@ namespace ConsoleTicTacToe
             }
         }
 
+        // Method to check if a player has formed a winning line
         static bool CheckLine(int r1, int c1, int r2, int c2, int r3, int c3)
         {
             if (Field[r1, c1] == currentPlayer && Field[r2, c2] == currentPlayer && Field[r3, c3] == currentPlayer)
@@ -126,6 +144,7 @@ namespace ConsoleTicTacToe
             return false;
         }
 
+        // Highlights the winning line with color and capital letters
         static void HighlightWinningLine(int r1, int c1, int r2, int c2, int r3, int c3)
         {
             Field[r1, c1] = char.ToUpper(Field[r1, c1]);
@@ -136,6 +155,7 @@ namespace ConsoleTicTacToe
             DrawFieldWithHighlight(r1, c1, r2, c2, r3, c3);
         }
 
+        // Draws the game field and highlights the winning line in color
         static void DrawFieldWithHighlight(int r1, int c1, int r2, int c2, int r3, int c3)
         {
             Console.WriteLine(currentPlayer + " Player`s turn:");
@@ -146,14 +166,14 @@ namespace ConsoleTicTacToe
                 {
                     if ((row == r1 && col == c1) || (row == r2 && col == c2) || (row == r3 && col == c3))
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        Console.BackgroundColor = ConsoleColor.DarkCyan; // Highlight winning cells
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write($"|{Field[row, col]}|");
                         Console.ResetColor();
                     }
                     else if (row == selectedFieldRow && col == selectedFieldColumn)
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        Console.BackgroundColor = ConsoleColor.DarkGray; // Highlight the selected cell
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write($"|{Field[row, col]}|");
                         Console.ResetColor();
@@ -167,6 +187,7 @@ namespace ConsoleTicTacToe
             }
         }
 
+        // Resets the game board and switches the starting player
         static void ResetGame()
         {
             Field = new char[3, 3]
