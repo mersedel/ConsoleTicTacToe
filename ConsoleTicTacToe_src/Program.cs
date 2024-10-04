@@ -15,7 +15,7 @@ namespace ConsoleTicTacToe
             { '_', '_', '_' }
         };
 
-        private static char currentPlayer = 'X';
+        private static char currentPlayer = 'x';
 
 
         static void Main(string[] args)
@@ -82,10 +82,7 @@ namespace ConsoleTicTacToe
 
                     WinCheck();
 
-                    if (currentPlayer == 'X')
-                        currentPlayer = 'O';
-                    else
-                        currentPlayer = 'X';
+                    currentPlayer = currentPlayer == 'x' ? 'o' : 'x';
 
                     break;
             }
@@ -97,7 +94,7 @@ namespace ConsoleTicTacToe
                 CheckLine(0, 0, 1, 0, 2, 0) || CheckLine(0, 1, 1, 1, 2, 1) || CheckLine(0, 2, 1, 2, 2, 2) || // Columns
                 CheckLine(0, 0, 1, 1, 2, 2) || CheckLine(2, 0, 1, 1, 0, 2))                                 // Diagonals
             {
-                Console.WriteLine(currentPlayer + " Wins!\n\nStart new game? (y/n)");
+                Console.WriteLine(currentPlayer + " Player Wins!\n\nStart new game? (y/n)");
 
                 ConsoleKey key;
                 do
@@ -121,7 +118,53 @@ namespace ConsoleTicTacToe
 
         static bool CheckLine(int r1, int c1, int r2, int c2, int r3, int c3)
         {
-            return Field[r1, c1] == currentPlayer && Field[r2, c2] == currentPlayer && Field[r3, c3] == currentPlayer;
+            if (Field[r1, c1] == currentPlayer && Field[r2, c2] == currentPlayer && Field[r3, c3] == currentPlayer)
+            {
+                HighlightWinningLine(r1, c1, r2, c2, r3, c3);
+                return true;
+            }
+            return false;
+        }
+
+        static void HighlightWinningLine(int r1, int c1, int r2, int c2, int r3, int c3)
+        {
+            Field[r1, c1] = char.ToUpper(Field[r1, c1]);
+            Field[r2, c2] = char.ToUpper(Field[r2, c2]);
+            Field[r3, c3] = char.ToUpper(Field[r3, c3]);
+
+            Console.Clear();
+            DrawFieldWithHighlight(r1, c1, r2, c2, r3, c3);
+        }
+
+        static void DrawFieldWithHighlight(int r1, int c1, int r2, int c2, int r3, int c3)
+        {
+            Console.WriteLine(currentPlayer + " Player`s turn:");
+
+            for (int row = 0; row < 3; row++)
+            {
+                for (int col = 0; col < 3; col++)
+                {
+                    if ((row == r1 && col == c1) || (row == r2 && col == c2) || (row == r3 && col == c3))
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write($"|{Field[row, col]}|");
+                        Console.ResetColor();
+                    }
+                    else if (row == selectedFieldRow && col == selectedFieldColumn)
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write($"|{Field[row, col]}|");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.Write($"|{Field[row, col]}|");
+                    }
+                }
+                Console.WriteLine();
+            }
         }
 
         static void ResetGame()
@@ -133,7 +176,7 @@ namespace ConsoleTicTacToe
                 { '_', '_', '_' }
             };
 
-            currentPlayer = 'X';
+            currentPlayer = 'o';
 
             selectedFieldRow = 0;
             selectedFieldColumn = 0;
