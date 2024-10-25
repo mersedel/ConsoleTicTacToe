@@ -34,7 +34,7 @@ namespace ConsoleTicTacToe
         }
 
         // Method to draw the game field on the console
-        static void DrawField()
+        private static void DrawField()
         {
             Console.WriteLine(currentPlayer + " Player`s turn:");
 
@@ -61,7 +61,7 @@ namespace ConsoleTicTacToe
         }
 
         // Handles user input for selecting a cell and placing their mark
-        static void FieldCellSelecter()
+        private static void FieldCellSelecter()
         {
             switch (Console.ReadKey(true).Key)
             {
@@ -91,16 +91,17 @@ namespace ConsoleTicTacToe
 
                     // Check for a winner after each move
                     WinCheck();
+                    DrawCheck(); 
 
                     // Switches to the other player after the move
                     currentPlayer = currentPlayer == 'x' ? 'o' : 'x';
 
                     break;
             }
-        }
+        } 
 
         // Checks for a winning condition
-        static void WinCheck()
+        private static void WinCheck()
         {
             if (CheckLine(0, 0, 0, 1, 0, 2) ||  // Row 1
                 CheckLine(1, 0, 1, 1, 1, 2) ||  // Row 2
@@ -129,12 +130,11 @@ namespace ConsoleTicTacToe
                         break;
                     }
                 } while (key != ConsoleKey.Y && key != ConsoleKey.N);
-
             }
         }
 
         // Method to check if a player has formed a winning line
-        static bool CheckLine(int r1, int c1, int r2, int c2, int r3, int c3)
+        private static bool CheckLine(int r1, int c1, int r2, int c2, int r3, int c3)
         {
             if (Field[r1, c1] == currentPlayer && Field[r2, c2] == currentPlayer && Field[r3, c3] == currentPlayer)
             {
@@ -144,8 +144,40 @@ namespace ConsoleTicTacToe
             return false;
         }
 
+        private static void DrawCheck()
+        {
+            byte occupiedCells = 0;
+
+            foreach (var cell in Field)
+            {
+                if (cell == 'x' || cell == 'o') occupiedCells++;
+            }
+
+            if (occupiedCells == 9)
+            {
+                Console.WriteLine("It`s a draw!\n\nStart new game? (y/n)");
+
+                ConsoleKey key;
+                do
+                {
+                    key = Console.ReadKey(true).Key;
+
+                    if (key == ConsoleKey.Y)
+                    {
+                        ResetGame(); // Reset the game if the player chooses 'Y'
+                        break;
+                    }
+                    else if (key == ConsoleKey.N)
+                    {
+                        gameIsRunning = false; // Ends the game if the player chooses 'N'
+                        break;
+                    }
+                } while (key != ConsoleKey.Y && key != ConsoleKey.N);
+            }
+        }
+
         // Highlights the winning line with color and capital letters
-        static void HighlightWinningLine(int r1, int c1, int r2, int c2, int r3, int c3)
+        private static void HighlightWinningLine(int r1, int c1, int r2, int c2, int r3, int c3)
         {
             Field[r1, c1] = char.ToUpper(Field[r1, c1]);
             Field[r2, c2] = char.ToUpper(Field[r2, c2]);
@@ -156,7 +188,7 @@ namespace ConsoleTicTacToe
         }
 
         // Draws the game field and highlights the winning line in color
-        static void DrawFieldWithHighlight(int r1, int c1, int r2, int c2, int r3, int c3)
+        private static void DrawFieldWithHighlight(int r1, int c1, int r2, int c2, int r3, int c3)
         {
             Console.WriteLine(currentPlayer + " Player`s turn:");
 
@@ -188,7 +220,7 @@ namespace ConsoleTicTacToe
         }
 
         // Resets the game board and switches the starting player
-        static void ResetGame()
+        private static void ResetGame()
         {
             Field = new char[3, 3]
             {
